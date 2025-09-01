@@ -1,4 +1,5 @@
 import Order from '../models/Order.js';
+import Cart from '../models/Cart.js';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -7,36 +8,48 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // @route   POST /api/orders
 // @access  Private
 export const addOrderItems = async (req, res) => {
-  const {
-    orderItems,
-    shippingAddress,
-    paymentMethod,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
-  } = req.body;
+  const { shippingAddress, paymentMethod } = req.body;
 
-  if (orderItems && orderItems.length === 0) {
-    return res.status(400).json({ message: 'No order items' });
-  } else {
+  try {
+    const cart = await Cart.findOne({ user: req.user._id }).populate('cartItems.product');
+
+    if (!cart || cart.cartItems.length === 0) {
+      return res.status(400).json({ message: 'No order items in cart' });
+    }
+
+    // Calculate prices
+    const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.product.price * item.qty, 0);
+    const shippingPrice = itemsPrice > 100 ? 0 : 10; // Example shipping logic
+    const taxPrice = 0.15 * itemsPrice; // Example tax logic
+    const totalPrice = itemsPrice + shippingPrice + taxPrice;
+
     const order = new Order({
-      orderItems: orderItems.map(item => ({ ...item, product: item._id, _id: undefined })),
+      orderItems: cart.cartItems.map(item => ({
+        name: item.product.name,
+        qty: item.qty,
+        image: item.product.image,
+        price: item.product.price,
+        product: item.product._id,
+      })),
       user: req.user._id,
       shippingAddress,
       paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
+      itemsPrice: itemsPrice.toFixed(2),
+      taxPrice: taxPrice.toFixed(2),
+      shippingPrice: shippingPrice.toFixed(2),
+      totalPrice: totalPrice.toFixed(2),
     });
 
-    try {
-      const createdOrder = await order.save();
-      res.status(201).json(createdOrder);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
+    const createdOrder = await order.save();
+
+    // Clear the cart
+    cart.cartItems = [];
+    await cart.save();
+
+    res.status(201).json(createdOrder);
+  } catch (error) {
+    console.error('Order creation error:', error);
+    res.status(400).json({ message: 'Error creating order' });
   }
 };
 

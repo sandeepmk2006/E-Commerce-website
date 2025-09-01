@@ -2,6 +2,10 @@
 /node_modules
 /server/node_modules
 /client/node_modules
+/client/.cache
+package-lock.json
+client/package-lock.json
+client/node_modules/.package-lock.json
 
 # Production
 /build
@@ -11,6 +15,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.pack
 
 # Environment variables
 .env
