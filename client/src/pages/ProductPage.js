@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api';
 import Rating from '../components/product/Rating';
 import CartContext from '../context/CartContext';
 
@@ -13,7 +13,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const { data } = await axios.get(`/api/products/${id}`);
+      const { data } = await API.get(`/products/${id}`);
       setProduct(data);
     };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from '../../api';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
@@ -22,7 +22,7 @@ const Register = () => {
       console.log('Passwords do not match');
     } else {
       try {
-        await axios.post('/api/auth/register', { name, email, password });
+        await API.post('/auth/register', { name, email, password });
         navigate('/login');
       } catch (err) {
         console.error(err.response.data);

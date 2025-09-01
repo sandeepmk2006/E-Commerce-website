@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../../api';
 
 const UserEditPage = () => {
   const { id } = useParams();
@@ -18,7 +18,7 @@ const UserEditPage = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const { data } = await axios.get(`/api/auth/users/${id}`, config);
+        const { data } = await API.get(`/auth/users/${id}`, config);
         setName(data.name);
         setEmail(data.email);
         setRole(data.role);
@@ -40,7 +40,7 @@ const UserEditPage = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      await axios.put(`/api/auth/users/${id}`, updatedUser, config);
+      await API.put(`/auth/users/${id}`, updatedUser, config);
       navigate('/admin/users');
     } catch (error) {
       console.error('Failed to update user', error);

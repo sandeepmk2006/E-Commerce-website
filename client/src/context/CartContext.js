@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
+import API from '../api';
 
 const CartContext = createContext();
 
@@ -27,7 +27,7 @@ export const CartProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const { data } = await axios.get('/api/cart', config);
+        const { data } = await API.get('/cart', config);
         dispatch({ type: 'SET_CART', payload: data.cartItems });
       }
     } catch (error) {
@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.post('/api/cart', { productId, qty }, config);
+      const { data } = await API.post('/cart', { productId, qty }, config);
       dispatch({ type: 'SET_CART', payload: data.cartItems });
     } catch (error) {
       console.error('Failed to add to cart', error);
@@ -63,7 +63,7 @@ export const CartProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.delete(`/api/cart/${productId}`, config);
+      const { data } = await API.delete(`/cart/${productId}`, config);
       dispatch({ type: 'SET_CART', payload: data.cartItems });
     } catch (error) {
       console.error('Failed to remove from cart', error);
@@ -79,7 +79,7 @@ export const CartProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.put('/api/cart', { productId, qty }, config);
+      const { data } = await API.put('/cart', { productId, qty }, config);
       dispatch({ type: 'SET_CART', payload: data.cartItems });
     } catch (error) {
       console.error('Failed to update cart quantity', error);

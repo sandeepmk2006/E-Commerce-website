@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../../api';
 
 const ProductEditPage = () => {
   const { id } = useParams();
@@ -16,7 +16,7 @@ const ProductEditPage = () => {
   useEffect(() => {
     if (id !== 'new') {
       const fetchProduct = async () => {
-        const { data } = await axios.get(`/api/products/${id}`);
+        const { data } = await API.get(`/products/${id}`);
         setName(data.name);
         setPrice(data.price);
         setImage(data.image);
@@ -41,9 +41,9 @@ const ProductEditPage = () => {
         },
       };
       if (id === 'new') {
-        await axios.post('/api/products', product, config);
+        await API.post('/products', product, config);
       } else {
-        await axios.put(`/api/products/${id}`, product, config);
+        await API.put(`/products/${id}`, product, config);
       }
       navigate('/admin/products');
     } catch (error) {

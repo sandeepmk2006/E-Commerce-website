@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api';
 import CartContext from '../context/CartContext';
 import UserContext from '../context/UserContext';
 import { loadStripe } from '@stripe/stripe-js';
@@ -39,7 +39,7 @@ const CheckoutPage = () => {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       };
 
-      const { data: order } = await axios.post('/api/orders', {
+      const { data: order } = await API.post('/orders', {
         shippingAddress: { address, city, postalCode, country },
         paymentMethod: stripePromise ? 'Stripe' : 'COD'
       }, config);
@@ -49,7 +49,7 @@ const CheckoutPage = () => {
         return;
       }
 
-      const { data: session } = await axios.post(`/api/orders/${order._id}/create-checkout-session`, {}, config);
+      const { data: session } = await API.post(`/orders/${order._id}/create-checkout-session`, {}, config);
       const stripe = await stripePromise;
       const result = await stripe.redirectToCheckout({ sessionId: session.id });
 

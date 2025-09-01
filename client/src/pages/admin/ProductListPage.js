@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../api';
 import { Link } from 'react-router-dom';
 
 const ProductListPage = () => {
@@ -7,7 +7,7 @@ const ProductListPage = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const { data } = await axios.get('/api/products');
+      const { data } = await API.get('/products');
       setProducts(data.products);
     };
     fetchProducts();
@@ -22,7 +22,7 @@ const ProductListPage = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        await axios.delete(`/api/products/${id}`, config);
+        await API.delete(`/products/${id}`, config);
         setProducts(products.filter((p) => p._id !== id));
       } catch (error) {
         console.error('Failed to delete product', error);

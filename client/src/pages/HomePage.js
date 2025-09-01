@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../api';
 import Product from '../components/product/Product';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ const HomePage = () => {
     setKeyword(keywordFromUrl);
 
     const fetchProducts = async () => {
-      const { data } = await axios.get(`/api/products?keyword=${keywordFromUrl}`);
+      const { data } = await API.get(`/products?keyword=${keywordFromUrl}`);
       setProducts(data.products);
     };
     fetchProducts();

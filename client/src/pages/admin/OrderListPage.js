@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../api';
 
 const OrderListPage = () => {
   const [orders, setOrders] = useState([]);
@@ -16,7 +16,7 @@ const OrderListPage = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.get('/api/orders', config);
+      const { data } = await API.get('/orders', config);
       setOrders(data);
     } catch (error) {
       console.error('Failed to fetch orders', error);
@@ -32,7 +32,7 @@ const OrderListPage = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        await axios.put(`/api/orders/${id}/deliver`, {}, config);
+        await API.put(`/orders/${id}/deliver`, {}, config);
         fetchOrders();
       } catch (error) {
         console.error('Failed to mark as delivered', error);

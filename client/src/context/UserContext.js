@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../api';
 import { jwtDecode } from 'jwt-decode';
 
 const UserContext = createContext();
@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.get('/api/auth/profile', config);
+      const { data } = await API.get('/auth/profile', config);
       setUser(data);
     } catch (error) {
       console.error('Failed to fetch user profile', error);
@@ -39,7 +39,7 @@ export const UserProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post('/api/auth/login', { email, password });
+      const { data } = await API.post('/auth/login', { email, password });
       localStorage.setItem('token', data.token);
       await fetchUserProfile(data.token);
       return true;

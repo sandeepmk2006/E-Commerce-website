@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../api';
 import { Link } from 'react-router-dom';
 
 const UserListPage = () => {
@@ -17,7 +17,7 @@ const UserListPage = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.get('/api/auth/users', config);
+      const { data } = await API.get('/auth/users', config);
       setUsers(data);
     } catch (error) {
       console.error('Failed to fetch users', error);
@@ -33,7 +33,7 @@ const UserListPage = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        await axios.delete(`/api/auth/users/${id}`, config);
+        await API.delete(`/auth/users/${id}`, config);
         fetchUsers();
       } catch (error) {
         console.error('Failed to delete user', error);

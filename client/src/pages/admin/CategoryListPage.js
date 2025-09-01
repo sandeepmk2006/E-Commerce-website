@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../api';
 import { Link } from 'react-router-dom';
 
 const CategoryListPage = () => {
@@ -11,7 +11,7 @@ const CategoryListPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get('/api/categories');
+      const { data } = await API.get('/categories');
       setCategories(data);
     } catch (error) {
       console.error('Failed to fetch categories', error);
@@ -27,7 +27,7 @@ const CategoryListPage = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        await axios.delete(`/api/categories/${id}`, config);
+        await API.delete(`/categories/${id}`, config);
         fetchCategories();
       } catch (error) {
         console.error('Failed to delete category', error);

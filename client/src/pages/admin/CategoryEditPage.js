@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../../api';
 
 const CategoryEditPage = () => {
   const { id } = useParams();
@@ -10,7 +10,7 @@ const CategoryEditPage = () => {
   useEffect(() => {
     if (id !== 'new') {
       const fetchCategory = async () => {
-        const { data } = await axios.get(`/api/categories/${id}`);
+        const { data } = await API.get(`/categories/${id}`);
         setName(data.name);
       };
       fetchCategory();
@@ -29,9 +29,9 @@ const CategoryEditPage = () => {
         },
       };
       if (id === 'new') {
-        await axios.post('/api/categories', category, config);
+        await API.post('/categories', category, config);
       } else {
-        await axios.put(`/api/categories/${id}`, category, config);
+        await API.put(`/categories/${id}`, category, config);
       }
       navigate('/admin/categories');
     } catch (error) {
